@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <bean class="spring.example.expression.ExpressionBean">
+        <property name="simpleExpression" value="#{10 + 10}"/>
+        <property name="secondBeanValue" value="#{secondBean.value}"/>
+        <property name="resultOfMethod" value="#{secondBean.someMethod()}"/>
+        <property name="staticMethod" value="#{T(java.lang.System).currentTimeMillis()}"/>
+    </bean>
+
+    <bean id="secondBean" class="spring.example.expression.SecondExpressionBean">
+        <property name="value" value="default"/>
+    </bean>
+</beans>

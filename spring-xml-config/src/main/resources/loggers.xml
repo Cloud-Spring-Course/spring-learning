@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <bean id="consoleEventLogger" class="spring.example.logger.ConsoleEventLogger">
+    </bean>
+
+    <bean id="fileEventLogger" class="spring.example.logger.FileEventLogger" init-method="init">
+        <constructor-arg value="C:\\Work\\spring-file-event-logger.txt" />
+    </bean>
+
+    <bean id="baseFileEventLogger" class="spring.example.logger.FileEventLogger" init-method="init" abstract="true">
+        <constructor-arg value="C:\\Work\\spring-file-event-logger.txt" />
+    </bean>
+
+    <!--
+        Child bean is not mandatory be subclass of parent bean.
+        Everything is inherited, constructor args as well:
+        we do not specify file name here because it is already specified at baseFileEventLogger -->
+    <bean id="cachedFileEventLogger" class="spring.example.logger.CachedFileEventLogger"
+          parent="baseFileEventLogger" destroy-method="flushCache">
+        <constructor-arg value="10" />
+    </bean>
+
+    <bean id="combinedEventLogger" class="spring.example.logger.CombinedEventLogger">
+        <constructor-arg>
+            <list>
+                <ref bean="fileEventLogger"/>
+                <ref bean="consoleEventLogger"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="typeBasedEventLogger" class="spring.example.logger.ConsoleEventTypeBasedEventLogger">
+        <constructor-arg>
+            <map>
+                <entry key="INFO" value-ref="consoleEventLogger"/>
+                <entry key="ERROR" value-ref="cachedFileEventLogger"/>
+            </map>
+        </constructor-arg>
+    </bean>
+</beans>

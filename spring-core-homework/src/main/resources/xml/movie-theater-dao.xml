@@ -1,0 +1,13 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+    <bean id="auditoriumDao" class="spring.hometask.dao.inmemory.AuditoriumInMemoryDAO"/>
+    <bean id="eventDao" class="spring.hometask.dao.inmemory.EventInMemoryDAO"/>
+    <bean id="ticketDao" class="spring.hometask.dao.inmemory.TicketInMemoryDAO"/>
+    <bean id="userDAO" class="spring.hometask.dao.inmemory.UserInMemoryDAO"/>
+</beans>

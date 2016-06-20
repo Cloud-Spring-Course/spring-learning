@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+    <import resource="movie-theater-dao.xml"/>
+
+    <bean id="discountService" class="spring.hometask.service.impl.discount.DiscountServiceImpl">
+        <constructor-arg>
+            <list>
+                <bean class="spring.hometask.service.impl.discount.BirthdayDiscountStrategy">
+                    <constructor-arg name="discount" value="10"/>
+                    <constructor-arg name="daysWindow" value="50"/>
+                </bean>
+                <bean class="spring.hometask.service.impl.discount.TotalTicketsBoughtDiscountStrategy">
+                    <constructor-arg name="totalTickets" value="10"/>
+                    <constructor-arg name="discount" value="10"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="auditoriumService" class="spring.hometask.service.impl.AuditoriumServiceImpl">
+        <property name="auditoriumDAO" ref="auditoriumDao"/>
+    </bean>
+
+    <bean id="bookingService" class="spring.hometask.service.impl.BookingServiceImpl">
+        <property name="ticketDAO" ref="ticketDao"/>
+        <property name="discountService" ref="discountService"/>
+    </bean>
+
+    <bean id="eventService" class="spring.hometask.service.impl.EventServiceImpl">
+        <property name="eventDAO" ref="eventDao"/>
+    </bean>
+
+    <bean id="userService" class="spring.hometask.service.impl.UserServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+    </bean>
+</beans>

@@ -1,0 +1,75 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+    <import resource="loggers.xml"/>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:client.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <!-- If property not found, spring will find it in system.properties -->
+        <!--property name="systemPropertiesMode" value="override"/-->
+    </bean>
+
+    <bean id="utilTest" class="spring.example.util.SpringUtilTestBean">
+        <property name="mathPi">
+            <util:constant static-field="java.lang.Math.PI"/>
+        </property>
+    </bean>
+
+    <bean id="client" class="spring.example.Client">
+        <constructor-arg value="${client.id}"/>
+        <constructor-arg value="${client.name}"/>
+        <property name="greeting" value="${client.greeting}"/>
+    </bean>
+
+    <!-- Aliases can be specified in name field as well.
+     Example <bean id="..." name="alias1, alias2, ..." -->
+    <alias name="typeBasedEventLogger" alias="eventLogger"/>
+
+    <!--
+        New object created each time when we request it.
+        Spring injects all dependencies when creates object.
+        But this object is not managed by container after creating.
+        TODO test if aspects work.
+    -->
+    <bean id="event" class="spring.example.prototype.Event" scope="prototype">
+        <constructor-arg>
+            <bean class="java.util.Date"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="dateFormat"/>
+        </constructor-arg>
+    </bean>
+
+    <!-- Static method used to create object -->
+    <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance">
+    </bean>
+
+    <util:properties id="appProperties">
+        <prop key="version">1.0</prop>
+        <prop key="language">EN</prop>
+    </util:properties>
+
+    <bean id="app" class="spring.example.App" init-method="init">
+        <property name="client" ref="client"/>
+        <property name="eventLogger" ref="eventLogger"/>
+        <property name="properties" ref="appProperties"/>
+    </bean>
+
+    <!-- Same app, but with autowired dependencies -->
+    <bean id="testAutowired" class="spring.example.autowired.AutowiredBean" autowire="byType"/>
+
+    <bean id="monitoring" class="spring.example.on.Monitoring" init-method="init" depends-on="app">
+    </bean>
+
+    <bean id="lazy" class="spring.example.lazy.LazyInitBean" init-method="init" lazy-init="true">
+    </bean>
+</beans>

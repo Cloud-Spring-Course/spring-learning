@@ -1,0 +1,29 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <!-- Parent context beans can inject beans from child context -->
+    <bean id="app" class="spring.example.App" init-method="init">
+        <property name="client" ref="client"/>
+        <!-- Reference to bean from child context -->
+        <property name="eventLogger" ref="consoleEventLogger"/>
+    </bean>
+
+    <bean id="client" class="spring.example.Client">
+        <constructor-arg value="1"/>
+        <constructor-arg value="Client 1"/>
+    </bean>
+
+    <bean id="event" class="spring.example.prototype.Event" scope="prototype">
+        <constructor-arg>
+            <bean class="java.util.Date"/>
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="dateFormat"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance">
+    </bean>
+</beans>
